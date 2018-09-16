@@ -6,40 +6,50 @@ $tasks = [
     [
         'taskName' => 'Собеседование в IT компании',
         'taskDate' => '01.12.2018',
-        'project' =>$projects[2],
+        'project' => $projects[2],
         'completed' => false
     ],
     [
         'taskName' => 'Выполнить тестовое задание',
         'taskDate' => '25.12.2018',
-        'project' =>$projects[2],
+        'project' => $projects[2],
         'completed' => false
     ],
     [
         'taskName' => 'Сделать задание первого раздела',
         'taskDate' => '21.12.2018',
-        'project' =>$projects[1],
+        'project' => $projects[1],
         'completed' => true
     ],
     [
         'taskName' => 'Встреча с другом',
         'taskDate' => '22.12.2018',
-        'project' =>$projects[0],
+        'project' => $projects[0],
         'completed' => false
     ],
     [
         'taskName' => 'Купить корм для кота',
         'taskDate' => 'Нет',
-        'project' =>$projects[3],
+        'project' => $projects[3],
         'completed' => false
     ],
     [
         'taskName' => 'Заказать пиццу',
         'taskDate' => 'Нет',
-        'project' =>$projects[3],
+        'project' => $projects[3],
         'completed' => false
     ]
 ];
+
+function calcTasksQuantity ($tasks, $project) {
+    $tasksQuantity = 0;
+    foreach ($tasks as $task) {
+        if ($project === $task['project']) {
+            $tasksQuantity++;
+        }
+    }
+    return $tasksQuantity;
+}
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -90,7 +100,7 @@ $tasks = [
                     ?>
                         <li class="main-navigation__list-item">
                             <a class="main-navigation__list-item-link" href="#"><?= $project ?></a>
-                            <span class="main-navigation__list-item-count">0</span>
+                            <span class="main-navigation__list-item-count"><?= calcTasksQuantity ($tasks, $project) ?></span>
                         </li>
                     <?php
                     }
