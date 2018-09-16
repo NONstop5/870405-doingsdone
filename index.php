@@ -89,7 +89,7 @@ $tasks = [
                     foreach ($projects as $project) {
                     ?>
                         <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#"><?php print($project); ?></a>
+                            <a class="main-navigation__list-item-link" href="#"><?= $project ?></a>
                             <span class="main-navigation__list-item-count">0</span>
                         </li>
                     <?php
@@ -135,11 +135,11 @@ $tasks = [
                             $taskCompletedClass = " task--completed";
                         }
                     ?>
-                    <tr class="tasks__item task<?php print($taskCompletedClass); ?>">
+                    <tr class="tasks__item task<?= $taskCompletedClass ?>">
                         <td class="task__select">
                             <label class="checkbox task__checkbox">
                                 <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1">
-                                <span class="checkbox__text"><?php print ($task['taskName']) ?></span>
+                                <span class="checkbox__text"><?=$task['taskName'] ?></span>
                             </label>
                         </td>
 
@@ -147,7 +147,7 @@ $tasks = [
                             <a class="download-link" href="#">Home.psd</a>
                         </td>
 
-                        <td class="task__date"><?php print ($task['taskDate']); ?></td>
+                        <td class="task__date"><?= $task['taskDate'] ?></td>
                     </tr>
                     <?php
                     }
