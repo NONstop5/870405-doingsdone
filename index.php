@@ -6,7 +6,7 @@ $show_complete_tasks = rand(0, 1);
 $projects = ['Входящие', 'Учеба', 'Работа', 'Домашние дела', 'Авто'];
 $tasks = [
     [
-        'taskName' => 'Собеседование в IT компании',
+        'taskName' => 'Собеседование в IT <b>компании</b>',
         'taskDate' => '01.12.2018',
         'project' => $projects[2],
         'completed' => false
@@ -42,9 +42,9 @@ $tasks = [
         'completed' => false
     ]
 ];
-
+$pageTitle = "Дела в порядке";
 $content = include_template('index.php', ["tasks" => $tasks, "show_complete_tasks" => $show_complete_tasks]);
-$htmlData = include_template('layout.php', ["tasks" => $tasks, "projects" => $projects, "content" => $content]);
+$htmlData = include_template('layout.php', ["tasks" => $tasks, "projects" => $projects, "pageTitle" => $pageTitle, "content" => $content]);
 print($htmlData);
 ?>
 
