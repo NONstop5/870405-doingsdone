@@ -43,7 +43,8 @@ $tasks = [
     ]
 ];
 
-$content = print(include_template('index.php', $tasks)); // что сюда передовать ? (списки категорий/лотов/задач) - что именно то ?
-print(include_template('layout.php', $tasks)); // куда тут еще title передавать
+$content = include_template('index.php', ["tasks" => $tasks, "show_complete_tasks" => $show_complete_tasks]);
+$htmlData = include_template('layout.php', ["tasks" => $tasks, "projects" => $projects, "content" => $content]);
+print($htmlData);
 ?>
 
