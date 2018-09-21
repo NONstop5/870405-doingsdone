@@ -24,14 +24,23 @@
 
                 <table class="tasks">
                     <?php
+                    date_default_timezone_set("Europe/Moscow");
                     foreach ($tasks as $task) {
                         $taskCompletedClass = "";
+                        $taskImportantClass = '';
+
+                        $timeToOver = floor((strtotime($task['taskDate'] . '00:00:00') - time()) / 86400);
+
+                        if (!$timeToOver and $timeToOver <= 24) {
+                            $taskImportantClass = " task--important";
+                        }
+
                         if ($task['completed']) {
                             if (!$show_complete_tasks) { continue; }
                             $taskCompletedClass = " task--completed";
                         }
                     ?>
-                    <tr class="tasks__item task<?= $taskCompletedClass ?>">
+                    <tr class="tasks__item task<?= $taskCompletedClass ?><?= $taskImportantClass ?>">
                         <td class="task__select">
                             <label class="checkbox task__checkbox">
                                 <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1">
