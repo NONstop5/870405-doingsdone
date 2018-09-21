@@ -29,15 +29,17 @@
                         $taskCompletedClass = "";
                         $taskImportantClass = '';
 
-                        $timeToOver = floor((strtotime($task['taskDate'] . '00:00:00') - time()) / 86400);
+                        $taskDate = strtotime($task['taskDate'] . '00:00:00');
+                        $timeToOver = floor(($taskDate - time()) / 86400);
 
-                        if (!$timeToOver and $timeToOver <= 24) {
+                        if ($taskDate and $timeToOver <= 24) {
                             $taskImportantClass = " task--important";
                         }
 
                         if ($task['completed']) {
                             if (!$show_complete_tasks) { continue; }
                             $taskCompletedClass = " task--completed";
+                            $taskImportantClass = '';
                         }
                     ?>
                     <tr class="tasks__item task<?= $taskCompletedClass ?><?= $taskImportantClass ?>">
