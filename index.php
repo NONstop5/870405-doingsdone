@@ -13,7 +13,7 @@ $tasks = [
     ],
     [
         'taskName' => 'Выполнить тестовое задание',
-        'taskDate' => '21.09.2018',
+        'taskDate' => '23.09.2018',
         'project' => $projects[2],
         'completed' => false
     ],
@@ -25,19 +25,19 @@ $tasks = [
     ],
     [
         'taskName' => 'Встреча с другом',
-        'taskDate' => '22.12.2018',
+        'taskDate' => '24.09.2018',
         'project' => $projects[0],
         'completed' => false
     ],
     [
         'taskName' => 'Купить корм для кота',
-        'taskDate' => 'Нет',
+        'taskDate' => '',
         'project' => $projects[3],
         'completed' => false
     ],
     [
         'taskName' => 'Заказать пиццу',
-        'taskDate' => 'Нет',
+        'taskDate' => '',
         'project' => $projects[3],
         'completed' => false
     ]

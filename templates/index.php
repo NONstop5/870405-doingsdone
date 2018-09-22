@@ -27,19 +27,20 @@
                     date_default_timezone_set("Europe/Moscow");
                     foreach ($tasks as $task) {
                         $taskCompletedClass = "";
-                        $taskImportantClass = '';
+                        $taskImportantClass = "";
 
-                        $taskDate = strtotime($task['taskDate'] . '00:00:00');
-                        $timeToOver = floor(($taskDate - time()) / 86400);
+                        if ($task['taskDate'] !== '') {
+                            $taskDate = strtotime($task['taskDate'] . '00:00:00');
+                            $timeToOver = floor(($taskDate - time()) / 3600);
 
-                        if ($taskDate and $timeToOver <= 24) {
-                            $taskImportantClass = " task--important";
+                            if ($timeToOver <= 24) {
+                                $taskImportantClass = " task--important";
+                            }
                         }
-
                         if ($task['completed']) {
                             if (!$show_complete_tasks) { continue; }
                             $taskCompletedClass = " task--completed";
-                            $taskImportantClass = '';
+                            $taskImportantClass = "";
                         }
                     ?>
                     <tr class="tasks__item task<?= $taskCompletedClass . $taskImportantClass ?>">
