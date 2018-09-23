@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `tasks` (
   `task_id` int(11) NOT NULL AUTO_INCREMENT,
   `project_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `task_name` int(11) NOT NULL,
+  `task_name` varchar(50) DEFAULT NULL,
   `task_create_date` datetime NOT NULL,
   `task_complete_date` datetime DEFAULT NULL,
   `task_deadline` datetime DEFAULT NULL,
