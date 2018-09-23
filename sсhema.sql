@@ -23,7 +23,8 @@ CREATE TABLE IF NOT EXISTS `projects` (
   `project_name` varchar(50) NOT NULL,
   PRIMARY KEY (`project_id`),
   UNIQUE KEY `project_id` (`project_id`),
-  KEY `user_id` (`user_id`)
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `FK_projects_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Дамп данных таблицы doingsdone.projects: ~0 rows (приблизительно)
@@ -44,7 +45,9 @@ CREATE TABLE IF NOT EXISTS `tasks` (
   PRIMARY KEY (`task_id`),
   UNIQUE KEY `task_id` (`task_id`),
   KEY `project_id` (`project_id`),
-  KEY `user_id` (`user_id`)
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `FK_tasks_projects` FOREIGN KEY (`project_id`) REFERENCES `projects` (`project_id`),
+  CONSTRAINT `FK_tasks_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Дамп данных таблицы doingsdone.tasks: ~0 rows (приблизительно)
@@ -54,11 +57,11 @@ CREATE TABLE IF NOT EXISTS `tasks` (
 -- Дамп структуры для таблица doingsdone.users
 CREATE TABLE IF NOT EXISTS `users` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
-  `register_date` datetime NOT NULL,
-  `user_email` varchar(50) NOT NULL,
   `user_name` varchar(50) NOT NULL,
+  `user_email` varchar(50) NOT NULL,
   `user_password` varchar(50) NOT NULL,
   `user_contacts` varchar(100) DEFAULT NULL,
+  `register_date` datetime NOT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `user_id` (`user_id`),
   UNIQUE KEY `user_email` (`user_email`)
