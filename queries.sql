@@ -36,7 +36,7 @@ FROM
 WHERE
 	users.`user_id` = projects.`user_id`
 AND
-	users.`user_name` = 'NON$top'
+	users.`user_name` = 'NON$top';
 
 /*получить список из всех задач для одного проекта*/
 SELECT
@@ -44,7 +44,7 @@ SELECT
 FROM
 	`tasks`
 WHERE
-	`project_id` = 3
+	`project_id` = 3;
 
 /*пометить задачу как выполненную*/
 UPDATE
@@ -52,7 +52,7 @@ UPDATE
 SET
 	`task_complete_status` = 1
 WHERE
-	`task_id` = 3
+	`task_id` = 3;
 
 /*получить все задачи для завтрашнего дня*/
 SELECT
@@ -60,12 +60,12 @@ SELECT
 FROM
 	`tasks`
 WHERE
-	`task_complete_status` = 0
-  
+	`task_complete_status` = 0;
+
 /*обновить название задачи по её идентификатору*/
 UPDATE
 	`tasks`
 SET
 	`task_name` = 'Сделать задание первого раздела (update)'
 WHERE
-	`task_id` = 3
+	`task_id` = 3;
