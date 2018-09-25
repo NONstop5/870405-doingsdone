@@ -32,7 +32,7 @@ VALUES
 SELECT
 	`project_name`
 FROM
-	`projects`, `users`
+	`users`, `projects`
 WHERE
 	users.`user_id` = projects.`user_id`
 AND
