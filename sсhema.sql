@@ -1,4 +1,4 @@
-CREATE DATABASE `doingsdone`;
+CREATE DATABASE `doingsdone` COLLATE='utf8_general_ci';
 USE `doingsdone`;
 
 CREATE TABLE `projects` (
