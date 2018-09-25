@@ -14,9 +14,9 @@ CREATE TABLE `tasks` (
   `project_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `task_name` varchar(50) NOT NULL,
-  `task_create_date` datetime NOT NULL,
-  `task_complete_date` datetime DEFAULT NULL,
-  `task_deadline` datetime DEFAULT NULL,
+  `task_create_date` timestamp NOT NULL,
+  `task_complete_date` timestamp DEFAULT NULL,
+  `task_deadline` timestamp DEFAULT NULL,
   `task_file` varchar(100) DEFAULT NULL,
   `task_complete_status` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`task_id`),
@@ -30,7 +30,7 @@ CREATE TABLE `users` (
   `user_email` varchar(50) NOT NULL,
   `user_password` varchar(50) NOT NULL,
   `user_contacts` varchar(100) DEFAULT NULL,
-  `register_date` datetime NOT NULL,
+  `register_date` timestamp NOT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `user_email` (`user_email`)
 );
