@@ -29,7 +29,7 @@
                         $taskCompletedClass = "";
                         $taskImportantClass = "";
 
-                        if ($task['task_deadline'] !== NULL) {
+                        if (!is_null($task['task_deadline'])) {
                             $taskDate = strtotime($task['task_deadline'] . '00:00:00');
                             $timeToOver = floor(($taskDate - time()) / 3600);
 

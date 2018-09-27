@@ -1,11 +1,5 @@
 <?php
 
-$dbConn = mysqli_connect('localhost', 'root', '', 'doingsdone');
-mysqli_set_charset($dbConn, "utf8");
-if ($dbConn == false) {
-  print("Ошибка: Невозможно подключиться к MySQL " . mysqli_connect_error());
-}
-
 // Функция подсчета количества задач в проекте
 function calcTasksQuantity ($tasks, $project) {
   $tasksQuantity = 0;
