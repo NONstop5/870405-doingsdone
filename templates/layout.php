@@ -46,7 +46,7 @@
                     foreach ($projects as $project) {
                     ?>
                         <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#"><?= $project ?></a>
+                            <a class="main-navigation__list-item-link" href="#"><?= $project['project_name'] ?></a>
                             <span class="main-navigation__list-item-count"><?= calcTasksQuantity ($tasks, $project) ?></span>
                         </li>
                     <?php
