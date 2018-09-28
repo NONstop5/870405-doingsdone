@@ -1,14 +1,4 @@
 <?php
-// Функция подсчета количества задач в проекте
-function calcTasksQuantity ($tasks, $project) {
-    $tasksQuantity = 0;
-    foreach ($tasks as $task) {
-        if ($project === $task['project']) {
-            $tasksQuantity++;
-        }
-    }
-    return $tasksQuantity;
-}
 
 // Функция шаблонизатор
 function include_template($name, $data) {
@@ -25,6 +15,15 @@ function include_template($name, $data) {
 
     $result = ob_get_clean();
 
+    return $result;
+}
+
+// Функция обработки запроса к БД
+function execSql($conn, $sql) {
+    $result = mysqli_query($conn, $sql);
+    if ($result == false) {
+        print("Ошибка при выполнении запроса:" . mysqli_error($conn));
+    }
     return $result;
 }
 ?>

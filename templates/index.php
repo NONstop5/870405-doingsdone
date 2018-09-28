@@ -29,15 +29,15 @@
                         $taskCompletedClass = "";
                         $taskImportantClass = "";
 
-                        if ($task['taskDate'] !== '') {
-                            $taskDate = strtotime($task['taskDate'] . '00:00:00');
+                        if (!is_null($task['task_deadline'])) {
+                            $taskDate = strtotime($task['task_deadline'] . '00:00:00');
                             $timeToOver = floor(($taskDate - time()) / 3600);
 
                             if ($timeToOver <= 24) {
                                 $taskImportantClass = " task--important";
                             }
                         }
-                        if ($task['completed']) {
+                        if ($task['task_complete_status']) {
                             if (!$show_complete_tasks) { continue; }
                             $taskCompletedClass = " task--completed";
                             $taskImportantClass = "";
@@ -47,7 +47,7 @@
                         <td class="task__select">
                             <label class="checkbox task__checkbox">
                                 <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1">
-                                <span class="checkbox__text"><?= htmlspecialchars($task['taskName']) ?></span>
+                                <span class="checkbox__text"><?= htmlspecialchars($task['task_name']) ?></span>
                             </label>
                         </td>
 
@@ -55,7 +55,7 @@
                             <a class="download-link" href="#">Home.psd</a>
                         </td>
 
-                        <td class="task__date"><?= $task['taskDate'] ?></td>
+                        <td class="task__date"><?= $task['task_deadline'] ?></td>
                     </tr>
                     <?php
                     }
