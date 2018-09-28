@@ -1,7 +1,7 @@
 <?php
 
 // Функция шаблонизатор
-function include_template ($name, $data) {
+function include_template($name, $data) {
     $name = 'templates/' . $name;
     $result = '';
 
@@ -19,7 +19,7 @@ function include_template ($name, $data) {
 }
 
 // Функция обработки запроса к БД
-function execSql ($conn, $sql) {
+function execSql($conn, $sql) {
     $result = mysqli_query($conn, $sql);
     if ($result == false) {
         print("Ошибка при выполнении запроса:" . mysqli_error($conn));
