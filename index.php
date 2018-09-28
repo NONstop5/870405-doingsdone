@@ -2,10 +2,11 @@
 require_once ('functions.php');
 
 $dbConn = mysqli_connect('localhost', 'root', '', 'doingsdone');
-mysqli_set_charset($dbConn, "utf8");
 if ($dbConn == false) {
     print("Ошибка: Невозможно подключиться к MySQL " . mysqli_connect_error());
+    exit();
 }
+mysqli_set_charset($dbConn, "utf8");
 
 // показывать или нет выполненные задачи
 $show_complete_tasks = rand(0, 1);
