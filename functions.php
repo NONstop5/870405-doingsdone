@@ -22,7 +22,8 @@ function include_template($name, $data) {
 function execSql($conn, $sql) {
     $result = mysqli_query($conn, $sql);
     if ($result == false) {
-        print("Ошибка при выполнении запроса:" . mysqli_error($conn));
+        print("Ошибка при выполнении запроса:" . mysqli_error($conn) . "<br>");
+        print($sql);
     }
     return $result;
 }
