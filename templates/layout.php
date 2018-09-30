@@ -46,7 +46,7 @@
                     foreach ($projects as $project) {
                     ?>
                         <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#"><?= $project['project_name'] ?></a>
+                            <a class="main-navigation__list-item-link" href="/index.php?project_id=<?= $project['project_id'] ?>"><?= $project['project_name'] ?></a>
                             <span class="main-navigation__list-item-count"><?= $project['task_count'] ?></span>
                         </li>
                     <?php
