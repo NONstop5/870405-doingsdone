@@ -6,7 +6,7 @@ require_once 'functions.php';
 session_start();
 
 if (!empty($_SESSION['userName'])) {
-    session_destroy();
+    $_SESSION = [];
 }
 
 $pageTitle = "Дела в порядке - Добро пожаловать";

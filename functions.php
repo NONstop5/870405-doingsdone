@@ -264,17 +264,21 @@ function checkNewUserFields($dbConn, $postArray)
 
     $isCorrectEmail = filter_var($postEmailStr, FILTER_VALIDATE_EMAIL);
 
-    if (!empty($postEmailStr) && $isCorrectEmail) {
-        $result['fieldValues']['email'] = $postEmailStr;
+    $result['fieldValues']['email'] = $postEmailStr;
+    $result['fieldValues']['password'] = $postPasswordStr;
+    $result['fieldValues']['name'] = $postNameStr;
 
+    if (empty($postEmailStr)) {
+        $result = setErrorsValues($result, 'email', 'Введите корректное значение');
+    } elseif (!$isCorrectEmail) {
+        $result = setErrorsValues($result, 'email', 'E-mail введён некорректно');
+    } else {
         $sql = 'SELECT user_id FROM users WHERE user_email = \'' . $postEmailStr . '\'';
         $users = execSql($dbConn, $sql);
 
         if (mysqli_num_rows($users)) {
-            $result = setErrorsValues ($result, 'email', 'Пользователь с таким e-mail уже существует');
+            $result = setErrorsValues($result, 'email', 'Пользователь с таким e-mail уже существует');
         }
-    } else {
-        $result = setErrorsValues ($result, 'email', 'E-mail введён некорректно');
     }
 
     if (!empty($postPasswordStr)) {
@@ -305,27 +309,29 @@ function checkExistingUserFields($dbConn, $postArray)
     $result['fieldValues']['email'] = $postEmailStr;
     $result['fieldValues']['password'] = $postPasswordStr;
 
-    if (empty($postEmailStr) && !$isCorrectEmail) {
-        $result = setErrorsValues ($result, 'email', 'E-mail введён некорректно');
+    if (empty($postEmailStr)) {
+        $result = setErrorsValues($result, 'email', 'Введите корректное значение');
+    } elseif (!$isCorrectEmail) {
+        $result = setErrorsValues($result, 'email', 'E-mail введён некорректно');
     }
 
-    if (!empty($postPasswordStr)) {
+    if (empty($postPasswordStr)) {
+        $result = setErrorsValues($result, 'password', 'Введите корректное значение');
+    } else {
         $sql = 'SELECT user_id, user_name, user_password FROM users WHERE user_email = \'' . $postEmailStr . '\'';
         $users = getAssocArrayFromSQL($dbConn, $sql);
 
         if (count($users)) {
-            if (!password_verify($postPasswordStr, $users[0]['user_password'])) {
+            if (password_verify($postPasswordStr, $users[0]['user_password'])) {
+                startSession($users[0]['user_id'], $users[0]['user_name']);
+            } else {
                 $result['errors']['errorFlag'] = 1;
                 $result['errors']['errorGeneralMessage'] = '<p class="error-message">Пользователь с такими e-mail и паролем не найден</p>';
-            } else {
-                startSession($users[0]['user_id'], $users[0]['user_name']);
             }
         } else {
             $result['errors']['errorFlag'] = 1;
             $result['errors']['errorGeneralMessage'] = '<p class="error-message">Пользователь с такими e-mail и паролем не найден</p>';
         }
-    } else {
-        $result = setErrorsValues ($result, 'password', 'Введите корректное значение');
     }
 
     return $result;
@@ -338,9 +344,9 @@ function checkProjectFields($dbConn, $postArray)
 
     $postNameStr = clearUserInputStr($postArray['name']);
 
-    if (!empty($postNameStr)) {
-        $result['fieldValues']['name'] = $postNameStr;
-    } else {
+    $result['fieldValues']['name'] = $postNameStr;
+
+    if (empty($postNameStr)) {
         $result = setErrorsValues ($result, 'name', 'Введите корректное значение');
     }
 
@@ -356,28 +362,26 @@ function checkTaskFields($dbConn, $currentUserId, $postArray, $filesArray)
     $postProjectStr = clearUserInputStr($postArray['project']);
     $postDateStr = clearUserInputStr($postArray['date']);
 
-    if (!empty($postNameStr)) {
-        $result['fieldValues']['name'] = $postNameStr;
-    } else {
+    $result['fieldValues']['name'] = $postNameStr;
+    $result['fieldValues']['date'] = $postDateStr;
+
+    if (empty($postNameStr)) {
         $result = setErrorsValues ($result, 'name', 'Введите корректное значение');
     }
 
-    if (!empty($postProjectStr)) {
+    if (empty($postProjectStr)) {
+        $result = setErrorsValues($result, 'project', 'Введите корректное значение');
+    } else {
         $sql = 'SELECT project_id FROM projects WHERE user_id = ' . $currentUserId . ' AND project_id = ' . $postProjectStr;
         $projects = execSql($dbConn, $sql);
 
         if (mysqli_num_rows($projects)) {
             $result['fieldValues']['project'] = $postProjectStr;
         }
-    } else {
-        $result = setErrorsValues ($result, 'project', 'Введите корректное значение');
     }
 
     if (!empty($postDateStr)) {
-        if (checkDateFormat($postDateStr)) {
-            $result['fieldValues']['date'] = $postDateStr;
-        } else {
-            $result['fieldValues']['date'] = $postDateStr;
+        if (!checkDateFormat($postDateStr)) {
             $result = setErrorsValues ($result, 'date', 'Введите корректное значение даты');
         }
     }
