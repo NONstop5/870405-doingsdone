@@ -14,7 +14,7 @@ $activeProject = ['id' => '', 'getStr' => ''];
 $fieldsValues = createEmptyProjectFieldValuesArray();
 
 if (isset($_POST['submit'])) {
-    $fieldsValues = checkProjectFields($dbConn, $_POST);
+    $fieldsValues = checkProjectFields($dbConn, $currentUserId, $_POST);
     if (!$fieldsValues['errors']['errorFlag']) {
         $sql = getProjectInsertSql($currentUserId, $fieldsValues['fieldValues']['name']);
         execSql($dbConn, $sql);

@@ -362,7 +362,7 @@ function checkExistingUserFields($dbConn, $postArray)
 }
 
 // Функция проверки полей формы нового проекта
-function checkProjectFields($dbConn, $postArray)
+function checkProjectFields($dbConn, $currentUserId, $postArray)
 {
     $result = createEmptyProjectFieldValuesArray();
 
@@ -372,6 +372,13 @@ function checkProjectFields($dbConn, $postArray)
 
     if (empty($postNameStr)) {
         $result = setErrorsValues($result, 'name', 'Введите корректное значение');
+    } else {
+        $sql = 'SELECT project_id FROM projects WHERE user_id = ' . $currentUserId . ' AND project_name = \'' . $postNameStr . '\'';
+        $projects = execSql($dbConn, $sql);
+
+        if (mysqli_num_rows($projects)) {
+            $result = setErrorsValues($result, 'name', 'Проект с таким именем уже существует');
+        }
     }
 
     return $result;
