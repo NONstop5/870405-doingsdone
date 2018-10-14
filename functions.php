@@ -1,7 +1,23 @@
 <?php
+/**
+ * Файл с функциями
+ *
+ * @category PHP
+ * @package  Files
+ * @author   Igor Ilyaguev <non_2002@mail.ru>
+ * @license  http://url.com free
+ * @version  GIT:
+ * @link     http://url.com
+ */
 
-// Функция шаблонизатор
-function include_template($name, $data)
+/**
+ * Функция шаблонизатор
+ *
+ * @param  string $name Имя подключаемого файла-шаблона
+ * @param  array  $data Массив данных для передачи в файл-шаблон
+ * @return object
+ */
+function Include_template($name, $data)
 {
     $name = 'templates/' . $name;
     $result = '';
@@ -12,14 +28,22 @@ function include_template($name, $data)
 
     ob_start();
     extract($data);
-    require_once $name;
+    include_once $name;
 
     $result = ob_get_clean();
 
     return $result;
 }
 
-// Функция подключния к БД
+/**
+ * Функция подключния к БД
+ *
+ * @param  string $host      Хост
+ * @param  string $userName  Имя пользователя БД
+ * @param  string $userPassw Пароль пользователя БД
+ * @param  string $dbName    Имя БД
+ * @return void
+ */
 function connectDb($host, $userName, $userPassw, $dbName)
 {
     $result = mysqli_connect($host, $userName, $userPassw, $dbName);
@@ -147,7 +171,7 @@ function clearUserInputStr($dataStr)
 }
 
 // Функция заполнения массива ошибок значениями
-function setErrorsValues ($fieldValuesArray, $fieldName, $errorMessage)
+function setErrorsValues($fieldValuesArray, $fieldName, $errorMessage)
 {
     $result = $fieldValuesArray;
     $result['errors']['errorFlag'] = 1;
@@ -284,13 +308,13 @@ function checkNewUserFields($dbConn, $postArray)
     if (!empty($postPasswordStr)) {
         $result['fieldValues']['password'] = $postPasswordStr;
     } else {
-        $result = setErrorsValues ($result, 'password', 'Введите корректное значение');
+        $result = setErrorsValues($result, 'password', 'Введите корректное значение');
     }
 
     if (!empty($postNameStr)) {
         $result['fieldValues']['name'] = $postNameStr;
     } else {
-        $result = setErrorsValues ($result, 'name', 'Введите корректное значение');
+        $result = setErrorsValues($result, 'name', 'Введите корректное значение');
     }
 
     return $result;
@@ -347,7 +371,7 @@ function checkProjectFields($dbConn, $postArray)
     $result['fieldValues']['name'] = $postNameStr;
 
     if (empty($postNameStr)) {
-        $result = setErrorsValues ($result, 'name', 'Введите корректное значение');
+        $result = setErrorsValues($result, 'name', 'Введите корректное значение');
     }
 
     return $result;
@@ -366,7 +390,7 @@ function checkTaskFields($dbConn, $currentUserId, $postArray, $filesArray)
     $result['fieldValues']['date'] = $postDateStr;
 
     if (empty($postNameStr)) {
-        $result = setErrorsValues ($result, 'name', 'Введите корректное значение');
+        $result = setErrorsValues($result, 'name', 'Введите корректное значение');
     }
 
     if (empty($postProjectStr)) {
@@ -382,7 +406,7 @@ function checkTaskFields($dbConn, $currentUserId, $postArray, $filesArray)
 
     if (!empty($postDateStr)) {
         if (!checkDateFormat($postDateStr)) {
-            $result = setErrorsValues ($result, 'date', 'Введите корректное значение даты');
+            $result = setErrorsValues($result, 'date', 'Введите корректное значение даты');
         }
     }
 
