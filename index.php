@@ -1,13 +1,15 @@
 <?php
-require_once ('constants.php');
-require_once ('functions.php');
+
+require_once 'session_check.php';
+require_once 'constants.php';
+require_once 'functions.php';
 
 $dbConn = connectDb($host, $dbUserName, $dbUserPassw, $dbName);
 
 // показывать или нет выполненные задачи
 $show_complete_tasks = rand(0, 1);
 
-$currentUserId = 1;
+$currentUserId = $_SESSION['userId'];
 $projectFilterQuery = '';
 $activeProject = ['id' => '', 'getStr' => ''];
 
@@ -38,10 +40,9 @@ $projects = mysqli_fetch_all(mysqli_query($dbConn, $sql), MYSQLI_ASSOC);
 $sql = 'SELECT task_id, task_name, task_deadline, task_complete_status, task_file
         FROM tasks
         WHERE user_id = ' . $currentUserId . $projectFilterQuery . ' ORDER BY task_id DESC';
-$tasks = mysqli_fetch_all(execSql ($dbConn, $sql), MYSQLI_ASSOC);
+$tasks = mysqli_fetch_all(execSql($dbConn, $sql), MYSQLI_ASSOC);
 
 $pageTitle = "Дела в порядке";
 $content = include_template('index.php', ["tasks" => $tasks, "show_complete_tasks" => $show_complete_tasks]);
 $htmlData = include_template('layout.php', ["tasks" => $tasks, "projects" => $projects, "pageTitle" => $pageTitle, "content" => $content, "activeProject" => $activeProject]);
 print($htmlData);
-?>

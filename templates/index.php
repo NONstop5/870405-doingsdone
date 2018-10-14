@@ -17,7 +17,9 @@
 
                     <label class="checkbox">
                         <!--добавить сюда аттрибут "checked", если переменная $show_complete_tasks равна единице-->
-                        <input class="checkbox__input visually-hidden show_completed" type="checkbox" <?php if ($show_complete_tasks) { print("checked"); } ?>>
+                        <input class="checkbox__input visually-hidden show_completed" type="checkbox" <?php if ($show_complete_tasks) {
+    print("checked");
+} ?>>
                         <span class="checkbox__text">Показывать выполненные</span>
                     </label>
                 </div>
@@ -38,11 +40,12 @@
                             }
                         }
                         if ($task['task_complete_status']) {
-                            if (!$show_complete_tasks) { continue; }
+                            if (!$show_complete_tasks) {
+                                continue;
+                            }
                             $taskCompletedClass = " task--completed";
                             $taskImportantClass = "";
-                        }
-                    ?>
+                        } ?>
                     <tr class="tasks__item task<?= $taskCompletedClass . $taskImportantClass ?>">
                         <td class="task__select">
                             <label class="checkbox task__checkbox">

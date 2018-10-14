@@ -1,15 +1,17 @@
 <?php
-require_once ('constants.php');
-require_once ('functions.php');
+
+require_once 'session_check.php';
+require_once 'constants.php';
+require_once 'functions.php';
 
 $dbConn = connectDb($host, $dbUserName, $dbUserPassw, $dbName);
 
 // показывать или нет выполненные задачи
 $show_complete_tasks = rand(0, 1);
 
-$currentUserId = 1;
+$currentUserId = $_SESSION['userId'];
 $activeProject = ['id' => '', 'getStr' => ''];
-$taskFieldsValues = createEmptyTaskFieldValuesArray();
+$fieldsValues = createEmptyTaskFieldValuesArray();
 
 if (isset($_GET['project_id'])) {
     $activeProject['id'] = intval($_GET['project_id']);
@@ -24,9 +26,9 @@ if (isset($_POST['submit'])) {
         $activeProject['getStr'] = '?project_id=' . $activeProject['id'];
     }
 
-    $taskFieldsValues = checkTaskFields($dbConn, $currentUserId, $_POST, $_FILES);
-    if (!$taskFieldsValues['errors']['errorFlag']) {
-        $sql = getTaskInsertSql($currentUserId, $activeProject['id'], $taskFieldsValues['fieldValues']['name'], $taskFieldsValues['fieldValues']['date'], $taskFieldsValues['fieldValues']['file']);
+    $fieldsValues = checkTaskFields($dbConn, $currentUserId, $_POST, $_FILES);
+    if (!$fieldsValues['errors']['errorFlag']) {
+        $sql = getTaskInsertSql($currentUserId, $activeProject['id'], $fieldsValues['fieldValues']['name'], $fieldsValues['fieldValues']['date'], $fieldsValues['fieldValues']['file']);
         execSql($dbConn, $sql);
         header('Location: /index.php');
     }
@@ -41,8 +43,8 @@ $sql = 'SELECT projects.project_id, projects.project_name, COUNT(tasks.task_id) 
 $projects = getAssocArrayFromSQL($dbConn, $sql);
 
 $pageTitle = "Дела в порядке - Добавление задачи";
-$content = include_template('task_add.php', ["projects" => $projects, "activeProject" => $activeProject, 'taskFieldsValues'=> $taskFieldsValues]);
-$htmlData = include_template('layout.php', ["projects" => $projects, "pageTitle" => $pageTitle, "content" => $content, "activeProject" => $activeProject]);
+$content = include_template('task_add.php', ['projects' => $projects, 'activeProject' => $activeProject, 'fieldsValues'=> $fieldsValues]);
+$htmlData = include_template('layout.php', ['projects' => $projects, 'pageTitle' => $pageTitle, 'content' => $content, 'activeProject' => $activeProject]);
 print($htmlData);
 ?>
 
