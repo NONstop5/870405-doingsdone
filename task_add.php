@@ -1,8 +1,9 @@
 <?php
 
-require_once 'session_check.php';
 require_once 'constants.php';
 require_once 'functions.php';
+
+sessionCheck();
 
 $dbConn = connectDb($host, $dbUserName, $dbUserPassw, $dbName);
 
@@ -10,6 +11,8 @@ $dbConn = connectDb($host, $dbUserName, $dbUserPassw, $dbName);
 $show_complete_tasks = rand(0, 1);
 
 $currentUserId = $_SESSION['userId'];
+getUserName($currentUserId);
+
 $activeProject = ['id' => '', 'aloneGetStr' => '', 'additionGetStr' => ''];
 $fieldsValues = createEmptyTaskFieldValuesArray();
 

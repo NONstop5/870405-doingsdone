@@ -28,7 +28,7 @@
                     </div>
 
                     <div class="user-menu__data">
-                        <p><?=  $_SESSION['userName'] ?></p>
+                        <p><?= $activeUserName ?></p>
 
                         <a href="/logout.php">Выйти</a>
                     </div>
