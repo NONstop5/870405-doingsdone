@@ -1,14 +1,16 @@
 <?php
+session_start();
 
 require_once 'constants.php';
 require_once 'functions.php';
 
-sessionCheck();
+showGuestPage();
 
 $dbConn = connectDb($host, $dbUserName, $dbUserPassw, $dbName);
 
 $currentUserId = $_SESSION['userId'];
-$activeUserName = getUserName($dbConn, $currentUserId);
+$user = getUser($dbConn, $currentUserId);
+$activeUserName = $user[0]['user_name'];
 
 $projectFilterQuery = '';
 $taskFilterQuery = '';
@@ -32,15 +34,12 @@ if (isset($_GET['project_id'])) {
         print('Страница не обнаружена!');
         exit();
     }
-
-    $activeProject['aloneGetStr'] = '?project_id=' . $activeProject['id'];
-    $activeProject['additionGetStr'] = '&project_id=' . $activeProject['id'];
 }
 
 if (isset($_GET['show_completed'])) {
     $showCompleteTasks = intval($_GET['show_completed']);
 } else {
-    $showCompleteTasks = rand(0, 1);
+    $showCompleteTasks = 0;
 }
 
 if (isset($_GET['task_id']) && isset($_GET['check'])) {

@@ -7,13 +7,9 @@ sessionCheck();
 
 $dbConn = connectDb($host, $dbUserName, $dbUserPassw, $dbName);
 
-// показывать или нет выполненные задачи
-$show_complete_tasks = rand(0, 1);
-
 $currentUserId = $_SESSION['userId'];
-getUserName($currentUserId);
 
-$activeProject = ['id' => '', 'aloneGetStr' => '', 'additionGetStr' => ''];
+$activeProject = ['id' => ''];
 $fieldsValues = createEmptyProjectFieldValuesArray();
 
 if (isset($_POST['submit'])) {
@@ -21,7 +17,7 @@ if (isset($_POST['submit'])) {
     if (!$fieldsValues['errors']['errorFlag']) {
         $sql = getProjectInsertSql($currentUserId, $fieldsValues['fieldValues']['name']);
         execSql($dbConn, $sql);
-        header('Location: /index.php');
+        header('Location: /');
     }
 }
 

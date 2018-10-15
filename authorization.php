@@ -11,7 +11,7 @@ if (isset($_POST['submit'])) {
     $fieldsValues = checkExistingUserFields($dbConn, $_POST);
 
     if (!$fieldsValues['errors']['errorFlag']) {
-        header('Location: /index.php');
+        header('Location: /');
     }
 }
 
