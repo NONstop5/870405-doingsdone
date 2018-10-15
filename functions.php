@@ -350,11 +350,11 @@ function checkExistingUserFields($dbConn, $postArray)
                 startSession($users[0]['user_id'], $users[0]['user_name']);
             } else {
                 $result['errors']['errorFlag'] = 1;
-                $result['errors']['errorGeneralMessage'] = '<p class="error-message">Пользователь с такими e-mail и паролем не найден</p>';
+                $result['errors']['errorGeneralMessage'] = '<p class="error-message">Вы ввели неверный email/пароль</p>';
             }
         } else {
             $result['errors']['errorFlag'] = 1;
-            $result['errors']['errorGeneralMessage'] = '<p class="error-message">Пользователь с такими e-mail и паролем не найден</p>';
+            $result['errors']['errorGeneralMessage'] = '<p class="error-message">Вы ввели неверный email/пароль</p>';
         }
     }
 

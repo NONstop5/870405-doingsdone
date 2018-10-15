@@ -10,20 +10,22 @@ $dbConn = connectDb($host, $dbUserName, $dbUserPassw, $dbName);
 $show_complete_tasks = rand(0, 1);
 
 $currentUserId = $_SESSION['userId'];
-$activeProject = ['id' => '', 'getStr' => ''];
+$activeProject = ['id' => '', 'aloneGetStr' => '', 'additionGetStr' => ''];
 $fieldsValues = createEmptyTaskFieldValuesArray();
 
 if (isset($_GET['project_id'])) {
     $activeProject['id'] = intval($_GET['project_id']);
     if ($activeProject['id']) {
-        $activeProject['getStr'] = '?project_id=' . $activeProject['id'];
+        $activeProject['aloneGetStr'] = '?project_id=' . $activeProject['id'];
+        $activeProject['additionGetStr'] = '&project_id=' . $activeProject['id'];
     }
 }
 
 if (isset($_POST['submit'])) {
     $activeProject['id'] = intval($_POST['project']);
     if ($activeProject['id']) {
-        $activeProject['getStr'] = '?project_id=' . $activeProject['id'];
+        $activeProject['aloneGetStr'] = '?project_id=' . $activeProject['id'];
+        $activeProject['additionGetStr'] = '&project_id=' . $activeProject['id'];
     }
 
     $fieldsValues = checkTaskFields($dbConn, $currentUserId, $_POST, $_FILES);

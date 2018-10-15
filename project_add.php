@@ -10,7 +10,7 @@ $dbConn = connectDb($host, $dbUserName, $dbUserPassw, $dbName);
 $show_complete_tasks = rand(0, 1);
 
 $currentUserId = $_SESSION['userId'];
-$activeProject = ['id' => '', 'getStr' => ''];
+$activeProject = ['id' => '', 'aloneGetStr' => '', 'additionGetStr' => ''];
 $fieldsValues = createEmptyProjectFieldValuesArray();
 
 if (isset($_POST['submit'])) {

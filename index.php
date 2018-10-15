@@ -6,16 +6,20 @@ require_once 'functions.php';
 
 $dbConn = connectDb($host, $dbUserName, $dbUserPassw, $dbName);
 
-// показывать или нет выполненные задачи
-$show_complete_tasks = rand(0, 1);
-
 $currentUserId = $_SESSION['userId'];
+
 $projectFilterQuery = '';
-$activeProject = ['id' => '', 'getStr' => ''];
+$taskFilterQuery = '';
+$activeProject = [
+    'id' => '',
+    'aloneGetStr' => '',
+    'additionGetStr' => ''
+];
+$activeTaskFilter = ['', '', '', ''];
 
 if (isset($_GET['project_id'])) {
     $activeProject['id'] = intval($_GET['project_id']);
-    $projectFilterQuery = ' AND `project_id` = ' . $activeProject['id'];
+    $projectFilterQuery = ' AND project_id = ' . $activeProject['id'];
 
     $sql = 'SELECT project_id FROM projects WHERE user_id = ' . $currentUserId . ' AND project_id = ' . $activeProject['id'];
     $projects = execSql($dbConn, $sql);
@@ -26,7 +30,34 @@ if (isset($_GET['project_id'])) {
         exit();
     }
 
-    $activeProject['getStr'] = '?project_id=' . $activeProject['id'];
+    $activeProject['aloneGetStr'] = '?project_id=' . $activeProject['id'];
+    $activeProject['additionGetStr'] = '&project_id=' . $activeProject['id'];
+}
+
+if (isset($_GET['show_completed'])) {
+    $showCompleteTasks = intval($_GET['show_completed']);
+} else {
+    $showCompleteTasks = rand(0, 1);
+}
+
+if (isset($_GET['task_id']) && isset($_GET['check'])) {
+    $sql = 'UPDATE tasks SET task_complete_status = ' . intval($_GET['check']) . ' WHERE task_id = ' . intval($_GET['task_id']);
+    execSql($dbConn, $sql);
+}
+
+if (isset($_GET['task_filter'])) {
+    $activeTaskFilter[intval($_GET['task_filter'])] = ' tasks-switch__item--active';
+    if (intval($_GET['task_filter']) === 1) {
+        $taskFilterQuery = ' AND DATE(task_deadline) = DATE(NOW())';
+    }
+    if (intval($_GET['task_filter']) === 2) {
+        $taskFilterQuery = ' AND DATE(task_deadline) = DATE_ADD(DATE(NOW()), INTERVAL 1 DAY)';
+    }
+    if (intval($_GET['task_filter']) === 3) {
+        $taskFilterQuery = ' AND task_complete_status = 0 AND task_deadline < NOW()';
+    }
+} else {
+    $activeTaskFilter[0] = ' tasks-switch__item--active';
 }
 
 $sql = 'SELECT projects.project_id, projects.project_name, COUNT(tasks.task_id) AS task_count
@@ -35,14 +66,14 @@ $sql = 'SELECT projects.project_id, projects.project_name, COUNT(tasks.task_id) 
         ON projects.project_id = tasks.project_id
         WHERE projects.user_id = ' . $currentUserId . '
         GROUP BY projects.project_id';
-$projects = mysqli_fetch_all(mysqli_query($dbConn, $sql), MYSQLI_ASSOC);
+$projects = getAssocArrayFromSQL($dbConn, $sql);
 
 $sql = 'SELECT task_id, task_name, task_deadline, task_complete_status, task_file
         FROM tasks
-        WHERE user_id = ' . $currentUserId . $projectFilterQuery . ' ORDER BY task_id DESC';
-$tasks = mysqli_fetch_all(execSql($dbConn, $sql), MYSQLI_ASSOC);
+        WHERE user_id = ' . $currentUserId . $projectFilterQuery . $taskFilterQuery . ' ORDER BY task_id DESC';
+$tasks = getAssocArrayFromSQL($dbConn, $sql);
 
 $pageTitle = "Дела в порядке";
-$content = include_template('index.php', ["tasks" => $tasks, "show_complete_tasks" => $show_complete_tasks]);
+$content = include_template('index.php', ["tasks" => $tasks, "showCompleteTasks" => $showCompleteTasks, "activeProject" => $activeProject, 'activeTaskFilter' => $activeTaskFilter]);
 $htmlData = include_template('layout.php', ["tasks" => $tasks, "projects" => $projects, "pageTitle" => $pageTitle, "content" => $content, "activeProject" => $activeProject]);
 print($htmlData);
