@@ -1,12 +1,14 @@
 <?php
 
-require_once 'session_check.php';
 require_once 'constants.php';
 require_once 'functions.php';
+
+sessionCheck();
 
 $dbConn = connectDb($host, $dbUserName, $dbUserPassw, $dbName);
 
 $currentUserId = $_SESSION['userId'];
+$activeUserName = getUserName($dbConn, $currentUserId);
 
 $projectFilterQuery = '';
 $taskFilterQuery = '';
@@ -48,15 +50,7 @@ if (isset($_GET['task_id']) && isset($_GET['check'])) {
 
 if (isset($_GET['task_filter'])) {
     $activeTaskFilter[intval($_GET['task_filter'])] = ' tasks-switch__item--active';
-    if (intval($_GET['task_filter']) === 1) {
-        $taskFilterQuery = ' AND DATE(task_deadline) = DATE(NOW())';
-    }
-    if (intval($_GET['task_filter']) === 2) {
-        $taskFilterQuery = ' AND DATE(task_deadline) = DATE_ADD(DATE(NOW()), INTERVAL 1 DAY)';
-    }
-    if (intval($_GET['task_filter']) === 3) {
-        $taskFilterQuery = ' AND task_complete_status = 0 AND task_deadline < NOW()';
-    }
+    $taskFilterQuery = getTaskFilterQuery($_GET);
 } else {
     $activeTaskFilter[0] = ' tasks-switch__item--active';
 }
@@ -83,5 +77,5 @@ $tasks = getAssocArrayFromSQL($dbConn, $sql);
 
 $pageTitle = "Дела в порядке";
 $content = include_template('index.php', ["tasks" => $tasks, "showCompleteTasks" => $showCompleteTasks, "activeProject" => $activeProject, 'activeTaskFilter' => $activeTaskFilter]);
-$htmlData = include_template('layout.php', ["tasks" => $tasks, "projects" => $projects, "pageTitle" => $pageTitle, "content" => $content, "activeProject" => $activeProject]);
+$htmlData = include_template('layout.php', ["tasks" => $tasks, "projects" => $projects, "pageTitle" => $pageTitle, "content" => $content, "activeProject" => $activeProject, 'activeUserName' => $activeUserName]);
 print($htmlData);

@@ -55,6 +55,60 @@ function connectDb($host, $userName, $userPassw, $dbName)
     return $result;
 }
 
+// Функция переадресации гостей сайта
+function redirectGuest()
+{
+    header('Location: /logout.php');
+    exit();
+}
+
+// Функция проверки сессии
+function sessionCheck()
+{
+    session_start();
+
+    if (empty($_SESSION['userId'])) {
+        redirectGuest();
+    }
+
+    return $_SESSION['userId'];
+}
+
+// Функция очистки сессии
+function clearSession()
+{
+    session_start();
+
+    if (!empty($_SESSION['userId'])) {
+        $_SESSION = [];
+    }
+}
+
+function getUserName($dbConn, $userId)
+{
+    $sql = 'SELECT user_name FROM users WHERE user_id = ' . $userId;
+    $users = getAssocArrayFromSQL($dbConn, $sql);
+
+    return $users[0]['user_name'];
+}
+
+function getTaskFilterQuery($get_array)
+{
+    $taskFilterQuery = '';
+    
+    if (intval($get_array['task_filter']) === 1) {
+        $taskFilterQuery = ' AND DATE(task_deadline) = DATE(NOW())';
+    }
+    if (intval($get_array['task_filter']) === 2) {
+        $taskFilterQuery = ' AND DATE(task_deadline) = DATE_ADD(DATE(NOW()), INTERVAL 1 DAY)';
+    }
+    if (intval($get_array['task_filter']) === 3) {
+        $taskFilterQuery = ' AND task_complete_status = 0 AND task_deadline < NOW()';
+    }
+
+    return $taskFilterQuery;
+}
+
 // Функция обработки запроса к БД
 function execSql($conn, $sql)
 {
@@ -75,11 +129,10 @@ function getAssocArrayFromSQL($dbConn, $sql)
 }
 
 // Создание ассоциативного массива из запроса к БД
-function startSession($userId, $userName)
+function startSession($userId)
 {
     session_start();
-    $_SESSION['userId'] = $userId;
-    $_SESSION['userName'] = $userName;
+    $_SESSION['userId'] = intval($userId);
 }
 
 // Функция создает SQL запрос на добавление нового пользователя
@@ -347,7 +400,7 @@ function checkExistingUserFields($dbConn, $postArray)
 
         if (count($users)) {
             if (password_verify($postPasswordStr, $users[0]['user_password'])) {
-                startSession($users[0]['user_id'], $users[0]['user_name']);
+                startSession($users[0]['user_id']);
             } else {
                 $result['errors']['errorFlag'] = 1;
                 $result['errors']['errorGeneralMessage'] = '<p class="error-message">Вы ввели неверный email/пароль</p>';
