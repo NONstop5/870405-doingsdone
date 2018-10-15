@@ -10,6 +10,7 @@ $currentUserId = $_SESSION['userId'];
 
 $projectFilterQuery = '';
 $taskFilterQuery = '';
+$taskSearchQuery = '';
 $activeProject = [
     'id' => '',
     'aloneGetStr' => '',
@@ -60,6 +61,13 @@ if (isset($_GET['task_filter'])) {
     $activeTaskFilter[0] = ' tasks-switch__item--active';
 }
 
+if (isset($_POST['submit']) && isset($_POST['search'])) {
+    $taskSearchStr = clearUserInputStr($_POST['search']);
+    if (!empty($taskSearchStr)) {
+        $taskSearchQuery = ' AND MATCH(task_name) AGAINST(\'' . $taskSearchStr . '\' IN NATURAL LANGUAGE MODE)';
+    }
+}
+
 $sql = 'SELECT projects.project_id, projects.project_name, COUNT(tasks.task_id) AS task_count
         FROM projects
         LEFT JOIN tasks
@@ -70,7 +78,7 @@ $projects = getAssocArrayFromSQL($dbConn, $sql);
 
 $sql = 'SELECT task_id, task_name, task_deadline, task_complete_status, task_file
         FROM tasks
-        WHERE user_id = ' . $currentUserId . $projectFilterQuery . $taskFilterQuery . ' ORDER BY task_id DESC';
+        WHERE user_id = ' . $currentUserId . $projectFilterQuery . $taskFilterQuery . $taskSearchQuery . ' ORDER BY task_id DESC';
 $tasks = getAssocArrayFromSQL($dbConn, $sql);
 
 $pageTitle = "Дела в порядке";
