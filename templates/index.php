@@ -2,22 +2,22 @@
                 <h2 class="content__main-heading">Список задач</h2>
 
                 <form class="search-form" action="index.php" method="post">
-                    <input class="search-form__input" type="text" name="" value="" placeholder="Поиск по задачам">
+                    <input class="search-form__input" type="text" name="search" value="" placeholder="Поиск по задачам">
 
-                    <input class="search-form__submit" type="submit" name="" value="Искать">
+                    <input class="search-form__submit" type="submit" name="submit" value="Искать">
                 </form>
 
                 <div class="tasks-controls">
                     <nav class="tasks-switch">
-                        <a href="/" class="tasks-switch__item tasks-switch__item--active">Все задачи</a>
-                        <a href="/" class="tasks-switch__item">Повестка дня</a>
-                        <a href="/" class="tasks-switch__item">Завтра</a>
-                        <a href="/" class="tasks-switch__item">Просроченные</a>
+                        <a href="/index.php?task_filter=0<?= $activeProject['additionGetStr'] ?>" class="tasks-switch__item<?= $activeTaskFilter[0] ?>">Все задачи</a>
+                        <a href="/index.php?task_filter=1<?= $activeProject['additionGetStr'] ?>" class="tasks-switch__item<?= $activeTaskFilter[1] ?>">Повестка дня</a>
+                        <a href="/index.php?task_filter=2<?= $activeProject['additionGetStr'] ?>" class="tasks-switch__item<?= $activeTaskFilter[2] ?>">Завтра</a>
+                        <a href="/index.php?task_filter=3<?= $activeProject['additionGetStr'] ?>" class="tasks-switch__item<?= $activeTaskFilter[3] ?>">Просроченные</a>
                     </nav>
 
                     <label class="checkbox">
                         <!--добавить сюда аттрибут "checked", если переменная $show_complete_tasks равна единице-->
-                        <input class="checkbox__input visually-hidden show_completed" type="checkbox" <?php if ($show_complete_tasks) { print("checked"); } ?>>
+                        <input class="checkbox__input visually-hidden show_completed" type="checkbox" <?php if ($showCompleteTasks) { print("checked"); } ?>>
                         <span class="checkbox__text">Показывать выполненные</span>
                     </label>
                 </div>
@@ -28,6 +28,7 @@
                     foreach ($tasks as $task) {
                         $taskCompletedClass = "";
                         $taskImportantClass = "";
+                        $taskCompleteStatus = "";
 
                         if (!is_null($task['task_deadline'])) {
                             $taskDate = strtotime($task['task_deadline'] . '00:00:00');
@@ -38,15 +39,17 @@
                             }
                         }
                         if ($task['task_complete_status']) {
-                            if (!$show_complete_tasks) { continue; }
+                            if (!$showCompleteTasks) {
+                                continue;
+                            }
                             $taskCompletedClass = " task--completed";
                             $taskImportantClass = "";
-                        }
-                    ?>
+                            $taskCompleteStatus = "checked";
+                        } ?>
                     <tr class="tasks__item task<?= $taskCompletedClass . $taskImportantClass ?>">
                         <td class="task__select">
                             <label class="checkbox task__checkbox">
-                                <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1">
+                                <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" name="task_complete" value="<?= $task['task_id'] ?>" <?= $taskCompleteStatus ?>>
                                 <span class="checkbox__text"><?= $task['task_name'] ?></span>
                             </label>
                         </td>

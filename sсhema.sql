@@ -14,23 +14,24 @@ CREATE TABLE `tasks` (
   `project_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `task_name` varchar(50) NOT NULL,
-  `task_create_date` timestamp NOT NULL,
-  `task_complete_date` timestamp DEFAULT NULL,
-  `task_deadline` timestamp DEFAULT NULL,
+  `task_create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `task_complete_date` timestamp NULL DEFAULT NULL,
+  `task_deadline` timestamp NULL DEFAULT NULL,
   `task_file` varchar(100) DEFAULT NULL,
   `task_complete_status` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`task_id`),
   KEY `project_id` (`project_id`),
-  KEY `user_id` (`user_id`)
+  KEY `user_id` (`user_id`),
+  FULLTEXT KEY `task_name` (`task_name`)
 );
 
 CREATE TABLE `users` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_name` varchar(50) NOT NULL,
   `user_email` varchar(50) NOT NULL,
-  `user_password` varchar(50) NOT NULL,
+  `user_password` varchar(60) NOT NULL,
   `user_contacts` varchar(100) DEFAULT NULL,
-  `register_date` timestamp NOT NULL,
+  `register_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `user_email` (`user_email`)
 );
