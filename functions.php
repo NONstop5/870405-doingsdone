@@ -63,14 +63,12 @@ function redirectGuest()
 }
 
 // Функция проверки сессии
-function sessionCheck()
+function showGuestPage()
 {
-    session_start();
 
     if (empty($_SESSION['userId'])) {
         redirectGuest();
     }
-
     return $_SESSION['userId'];
 }
 
@@ -84,18 +82,18 @@ function clearSession()
     }
 }
 
-function getUserName($dbConn, $userId)
+function getUser($dbConn, $userId)
 {
     $sql = 'SELECT user_name FROM users WHERE user_id = ' . $userId;
     $users = getAssocArrayFromSQL($dbConn, $sql);
 
-    return $users[0]['user_name'];
+    return $users;
 }
 
 function getTaskFilterQuery($get_array)
 {
     $taskFilterQuery = '';
-    
+
     if (intval($get_array['task_filter']) === 1) {
         $taskFilterQuery = ' AND DATE(task_deadline) = DATE(NOW())';
     }
@@ -480,4 +478,19 @@ function checkTaskFields($dbConn, $currentUserId, $postArray, $filesArray)
     }
 
     return $result;
+}
+
+
+function generateGetParamForUrl($paramList)
+{
+    if (empty($paramList)) {
+        return '';
+    }
+    $url = '?';
+    foreach($paramList as $name => $value) {
+        if (!empty($value)) {
+            $url .= $name . '=' . $value . '&';
+        }
+    }
+    return $url;
 }

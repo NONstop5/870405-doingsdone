@@ -9,10 +9,10 @@
 
                 <div class="tasks-controls">
                     <nav class="tasks-switch">
-                        <a href="/index.php?task_filter=0<?= $activeProject['additionGetStr'] ?>" class="tasks-switch__item<?= $activeTaskFilter[0] ?>">Все задачи</a>
-                        <a href="/index.php?task_filter=1<?= $activeProject['additionGetStr'] ?>" class="tasks-switch__item<?= $activeTaskFilter[1] ?>">Повестка дня</a>
-                        <a href="/index.php?task_filter=2<?= $activeProject['additionGetStr'] ?>" class="tasks-switch__item<?= $activeTaskFilter[2] ?>">Завтра</a>
-                        <a href="/index.php?task_filter=3<?= $activeProject['additionGetStr'] ?>" class="tasks-switch__item<?= $activeTaskFilter[3] ?>">Просроченные</a>
+                        <a href="/index.php<?= generateGetParamForUrl(['task_filter'=>0, 'project_id' => $activeProject['id']]) ?>" class="tasks-switch__item<?= $activeTaskFilter[0] ?>">Все задачи</a>
+                        <a href="/index.php<?= generateGetParamForUrl(['task_filter'=>1, 'project_id' => $activeProject['id']]) ?>" class="tasks-switch__item<?= $activeTaskFilter[1] ?>">Повестка дня</a>
+                        <a href="/index.php<?= generateGetParamForUrl(['task_filter'=>2, 'project_id' => $activeProject['id']]) ?>" class="tasks-switch__item<?= $activeTaskFilter[2] ?>">Завтра</a>
+                        <a href="/index.php<?= generateGetParamForUrl(['task_filter'=>3, 'project_id' => $activeProject['id']]) ?>" class="tasks-switch__item<?= $activeTaskFilter[3] ?>">Просроченные</a>
                     </nav>
 
                     <label class="checkbox">

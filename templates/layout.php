@@ -20,7 +20,7 @@
             </a>
 
             <div class="main-header__side">
-                <a class="main-header__side-item button button--plus open-modal" href="/task_add.php<?= $activeProject['aloneGetStr'] ?>">Добавить задачу</a>
+                <a class="main-header__side-item button button--plus open-modal" href="/task_add.php<?= generateGetParamForUrl(['project_id' => $activeProject['id']]) ?>">Добавить задачу</a>
 
                 <div class="main-header__side-item user-menu">
                     <div class="user-menu__image">
@@ -46,7 +46,7 @@
                     foreach ($projects as $project) {
                         ?>
                         <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="/index.php?project_id=<?= $project['project_id'] ?>"><?= $project['project_name'] ?></a>
+                            <a class="main-navigation__list-item-link" href="/index.php<?= generateGetParamForUrl(['project_id' => $project['project_id']]) ?>"><?= $project['project_name'] ?></a>
                             <span class="main-navigation__list-item-count"><?= $project['task_count'] ?></span>
                         </li>
                     <?php
@@ -71,7 +71,7 @@
             <p>Веб-приложение для удобного ведения списка дел.</p>
         </div>
 
-        <a class="main-footer__button button button--plus" href="/task_add.php<?= $activeProject['aloneGetStr'] ?>">Добавить задачу</a>
+        <a class="main-footer__button button button--plus" href="/task_add.php<?=generateGetParamForUrl(['project_id' => $activeProject['id']]) ?>">Добавить задачу</a>
 
         <div class="main-footer__social social">
             <span class="visually-hidden">Мы в соцсетях:</span>

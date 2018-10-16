@@ -17,7 +17,7 @@ if (isset($_POST['submit'])) {
             $fieldsValues['fieldValues']['name']
         );
         execSql($dbConn, $sql);
-        header('Location: /index.php');
+        header('Location: /');
     }
 }
 

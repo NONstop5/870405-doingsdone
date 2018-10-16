@@ -7,11 +7,8 @@ sessionCheck();
 
 $dbConn = connectDb($host, $dbUserName, $dbUserPassw, $dbName);
 
-// показывать или нет выполненные задачи
-$show_complete_tasks = rand(0, 1);
-
 $currentUserId = $_SESSION['userId'];
-getUserName($currentUserId);
+
 
 $activeProject = ['id' => '', 'aloneGetStr' => '', 'additionGetStr' => ''];
 $fieldsValues = createEmptyTaskFieldValuesArray();
