@@ -1,22 +1,6 @@
 <?php
-/**
- * Файл с функциями
- *
- * @category PHP
- * @package  Files
- * @author   Igor Ilyaguev <non_2002@mail.ru>
- * @license  http://url.com free
- * @version  GIT:
- * @link     http://url.com
- */
 
-/**
- * Функция шаблонизатор
- *
- * @param  string $name Имя подключаемого файла-шаблона
- * @param  array  $data Массив данных для передачи в файл-шаблон
- * @return object
- */
+// Функция шаблонизатор
 function Include_template($name, $data)
 {
     $name = 'templates/' . $name;
@@ -35,15 +19,7 @@ function Include_template($name, $data)
     return $result;
 }
 
-/**
- * Функция подключния к БД
- *
- * @param  string $host      Хост
- * @param  string $userName  Имя пользователя БД
- * @param  string $userPassw Пароль пользователя БД
- * @param  string $dbName    Имя БД
- * @return void
- */
+// Функция подключния к БД
 function connectDb($host, $userName, $userPassw, $dbName)
 {
     $result = mysqli_connect($host, $userName, $userPassw, $dbName);
