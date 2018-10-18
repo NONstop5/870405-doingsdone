@@ -1,21 +1,25 @@
 <?php
 
+session_start();
+
 require_once 'constants.php';
 require_once 'functions.php';
 
-sessionCheck();
+showGuestPage();
 
 $dbConn = connectDb($host, $dbUserName, $dbUserPassw, $dbName);
 
 $currentUserId = $_SESSION['userId'];
+$currentUserData = getCurrentUserData($dbConn, $currentUserId);
+$currentUserName = $currentUserData[0]['user_name'];
 
-
-$activeProject = ['id' => '', 'aloneGetStr' => '', 'additionGetStr' => ''];
+$activeProject = ['id' => ''];
 $fieldsValues = createEmptyTaskFieldValuesArray();
 
 if (isset($_GET['project_id'])) {
     $activeProject['id'] = intval($_GET['project_id']);
     if ($activeProject['id']) {
+
         $activeProject['aloneGetStr'] = '?project_id=' . $activeProject['id'];
         $activeProject['additionGetStr'] = '&project_id=' . $activeProject['id'];
     }
@@ -45,8 +49,8 @@ $sql = 'SELECT projects.project_id, projects.project_name, COUNT(tasks.task_id) 
 $projects = getAssocArrayFromSQL($dbConn, $sql);
 
 $pageTitle = "Дела в порядке - Добавление задачи";
-$content = include_template('task_add.php', ['projects' => $projects, 'activeProject' => $activeProject, 'fieldsValues'=> $fieldsValues]);
-$htmlData = include_template('layout.php', ['projects' => $projects, 'pageTitle' => $pageTitle, 'content' => $content, 'activeProject' => $activeProject]);
+$content = includeTemplate('task_add.php', ['projects' => $projects, 'activeProject' => $activeProject, 'fieldsValues'=> $fieldsValues]);
+$htmlData = includeTemplate('layout.php', ['pageTitle' => $pageTitle, 'content' => $content, 'projects' => $projects, 'activeProject' => $activeProject, 'currentUserName' => $currentUserName]);
 print($htmlData);
 ?>
 

@@ -1,7 +1,7 @@
 <?php
 
 // Функция шаблонизатор
-function Include_template($name, $data)
+function includeTemplate($name, $data)
 {
     $name = 'templates/' . $name;
     $result = '';
@@ -23,7 +23,7 @@ function Include_template($name, $data)
 function connectDb($host, $userName, $userPassw, $dbName)
 {
     $result = mysqli_connect($host, $userName, $userPassw, $dbName);
-    if ($result == false) {
+    if ($result ===  false) {
         print("Ошибка: Невозможно подключиться к MySQL " . mysqli_connect_error());
         exit();
     }
@@ -41,15 +41,13 @@ function redirectGuest()
 // Функция проверки сессии
 function showGuestPage()
 {
-
     if (empty($_SESSION['userId'])) {
         redirectGuest();
     }
-    return $_SESSION['userId'];
 }
 
 // Функция очистки сессии
-function clearSession()
+function endSession()
 {
     session_start();
 
@@ -58,9 +56,9 @@ function clearSession()
     }
 }
 
-function getUser($dbConn, $userId)
+function getCurrentUserData($dbConn, $userId)
 {
-    $sql = 'SELECT user_name FROM users WHERE user_id = ' . $userId;
+    $sql = 'SELECT user_id, user_name FROM users WHERE user_id = ' . $userId;
     $users = getAssocArrayFromSQL($dbConn, $sql);
 
     return $users;
@@ -70,6 +68,9 @@ function getTaskFilterQuery($get_array)
 {
     $taskFilterQuery = '';
 
+    if (intval($get_array['task_filter']) === 0) {
+        $taskFilterQuery = '';
+    }
     if (intval($get_array['task_filter']) === 1) {
         $taskFilterQuery = ' AND DATE(task_deadline) = DATE(NOW())';
     }
@@ -83,11 +84,30 @@ function getTaskFilterQuery($get_array)
     return $taskFilterQuery;
 }
 
+// Функция генерации параметров строки запроса
+function generateGetParamForUrl($paramList)
+{
+    if (empty($paramList)) {
+        return '';
+    }
+    $url = '?';
+    foreach($paramList as $name => $value) {
+        $paramValue = trim($value);
+        if ($paramValue === '') { continue; }
+        if (gettype($value) === "integer" && $value >= 0) {
+            $url .= $name . '=' . $value . '&';
+        }
+    }
+    $url = substr($url, 0, strlen($url) - 1);
+
+    return $url;
+}
+
 // Функция обработки запроса к БД
 function execSql($conn, $sql)
 {
     $result = mysqli_query($conn, $sql);
-    if ($result == false) {
+    if ($result === false) {
         print("Ошибка при выполнении запроса:" . mysqli_error($conn) . "<br>");
         print($sql);
         exit();
@@ -95,6 +115,9 @@ function execSql($conn, $sql)
     return $result;
 }
 
+function escapeSql($conn, $sqlStr) {
+    return mysqli_real_escape_string($conn, $sqlStr);
+}
 // Создание ассоциативного массива из запроса к БД
 function getAssocArrayFromSQL($dbConn, $sql)
 {
@@ -324,7 +347,7 @@ function checkNewUserFields($dbConn, $postArray)
     } elseif (!$isCorrectEmail) {
         $result = setErrorsValues($result, 'email', 'E-mail введён некорректно');
     } else {
-        $sql = 'SELECT user_id FROM users WHERE user_email = \'' . $postEmailStr . '\'';
+        $sql = 'SELECT user_id FROM users WHERE user_email = \'' . escapeSql($dbConn, $postEmailStr) . '\'';
         $users = execSql($dbConn, $sql);
 
         if (mysqli_num_rows($users)) {
@@ -369,7 +392,7 @@ function checkExistingUserFields($dbConn, $postArray)
     if (empty($postPasswordStr)) {
         $result = setErrorsValues($result, 'password', 'Введите корректное значение');
     } else {
-        $sql = 'SELECT user_id, user_name, user_password FROM users WHERE user_email = \'' . $postEmailStr . '\'';
+        $sql = 'SELECT user_id, user_name, user_password FROM users WHERE user_email = \'' . escapeSql($dbConn, $postEmailStr) . '\'';
         $users = getAssocArrayFromSQL($dbConn, $sql);
 
         if (count($users)) {
@@ -400,7 +423,7 @@ function checkProjectFields($dbConn, $currentUserId, $postArray)
     if (empty($postNameStr)) {
         $result = setErrorsValues($result, 'name', 'Введите корректное значение');
     } else {
-        $sql = 'SELECT project_id FROM projects WHERE user_id = ' . $currentUserId . ' AND project_name = \'' . $postNameStr . '\'';
+        $sql = 'SELECT project_id FROM projects WHERE user_id = ' . $currentUserId . ' AND project_name = \'' . escapeSql($dbConn, $postNameStr) . '\'';
         $projects = execSql($dbConn, $sql);
 
         if (mysqli_num_rows($projects)) {
@@ -430,7 +453,7 @@ function checkTaskFields($dbConn, $currentUserId, $postArray, $filesArray)
     if (empty($postProjectStr)) {
         $result = setErrorsValues($result, 'project', 'Введите корректное значение');
     } else {
-        $sql = 'SELECT project_id FROM projects WHERE user_id = ' . $currentUserId . ' AND project_id = ' . $postProjectStr;
+        $sql = 'SELECT project_id FROM projects WHERE user_id = ' . escapeSql($dbConn, $currentUserId) . ' AND project_id = ' . escapeSql($dbConn, $postProjectStr);
         $projects = execSql($dbConn, $sql);
 
         if (mysqli_num_rows($projects)) {
@@ -454,19 +477,4 @@ function checkTaskFields($dbConn, $currentUserId, $postArray, $filesArray)
     }
 
     return $result;
-}
-
-
-function generateGetParamForUrl($paramList)
-{
-    if (empty($paramList)) {
-        return '';
-    }
-    $url = '?';
-    foreach($paramList as $name => $value) {
-        if (!empty($value)) {
-            $url .= $name . '=' . $value . '&';
-        }
-    }
-    return $url;
 }

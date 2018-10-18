@@ -22,6 +22,6 @@ if (isset($_POST['submit'])) {
 }
 
 $pageTitle = 'Дела в порядке - Регистрация пользователя';
-$content = include_template('register_user.php', ['fieldsValues'=> $fieldsValues]);
-$htmlData = include_template('layout_guest.php', ['pageTitle' => $pageTitle, 'content' => $content]);
+$content = includeTemplate('register_user.php', ['fieldsValues'=> $fieldsValues]);
+$htmlData = includeTemplate('layout_guest.php', ['pageTitle' => $pageTitle, 'content' => $content]);
 echo $htmlData;

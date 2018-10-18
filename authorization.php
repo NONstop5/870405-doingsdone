@@ -16,6 +16,6 @@ if (isset($_POST['submit'])) {
 }
 
 $pageTitle = 'Дела в порядке - Авторизация';
-$content = include_template('authorization.php', ['fieldsValues'=> $fieldsValues]);
-$htmlData = include_template('layout_guest.php', ['pageTitle' => $pageTitle, 'content' => $content]);
+$content = includeTemplate('authorization.php', ['fieldsValues'=> $fieldsValues]);
+$htmlData = includeTemplate('layout_guest.php', ['pageTitle' => $pageTitle, 'content' => $content]);
 echo $htmlData;

@@ -9,14 +9,13 @@
 
                 <div class="tasks-controls">
                     <nav class="tasks-switch">
-                        <a href="/index.php<?= generateGetParamForUrl(['task_filter'=>0, 'project_id' => $activeProject['id']]) ?>" class="tasks-switch__item<?= $activeTaskFilter[0] ?>">Все задачи</a>
-                        <a href="/index.php<?= generateGetParamForUrl(['task_filter'=>1, 'project_id' => $activeProject['id']]) ?>" class="tasks-switch__item<?= $activeTaskFilter[1] ?>">Повестка дня</a>
-                        <a href="/index.php<?= generateGetParamForUrl(['task_filter'=>2, 'project_id' => $activeProject['id']]) ?>" class="tasks-switch__item<?= $activeTaskFilter[2] ?>">Завтра</a>
-                        <a href="/index.php<?= generateGetParamForUrl(['task_filter'=>3, 'project_id' => $activeProject['id']]) ?>" class="tasks-switch__item<?= $activeTaskFilter[3] ?>">Просроченные</a>
+                        <a href="/index.php<?= generateGetParamForUrl(['task_filter'=> 0, 'project_id' => $activeProject['id']]) ?>" class="tasks-switch__item<?= $activeTaskFilter[0] ?>">Все задачи</a>
+                        <a href="/index.php<?= generateGetParamForUrl(['task_filter'=> 1, 'project_id' => $activeProject['id']]) ?>" class="tasks-switch__item<?= $activeTaskFilter[1] ?>">Повестка дня</a>
+                        <a href="/index.php<?= generateGetParamForUrl(['task_filter'=> 2, 'project_id' => $activeProject['id']]) ?>" class="tasks-switch__item<?= $activeTaskFilter[2] ?>">Завтра</a>
+                        <a href="/index.php<?= generateGetParamForUrl(['task_filter'=> 3, 'project_id' => $activeProject['id']]) ?>" class="tasks-switch__item<?= $activeTaskFilter[3] ?>">Просроченные</a>
                     </nav>
 
                     <label class="checkbox">
-                        <!--добавить сюда аттрибут "checked", если переменная $show_complete_tasks равна единице-->
                         <input class="checkbox__input visually-hidden show_completed" type="checkbox" <?php if ($showCompleteTasks) { print("checked"); } ?>>
                         <span class="checkbox__text">Показывать выполненные</span>
                     </label>
@@ -53,11 +52,19 @@
                                 <span class="checkbox__text"><?= $task['task_name'] ?></span>
                             </label>
                         </td>
-
+                        <?php
+                        if (empty($task['task_file'])) {
+                        ?>
+                        <td>&nbsp;</td>
+                        <?php
+                        } else {
+                        ?>
                         <td class="task__file">
                             <a class="download-link" href="<?= $task['task_file'] ?>"><?= basename($task['task_file']) ?></a>
                         </td>
-
+                        <?php
+                        }
+                        ?>
                         <td class="task__date"><?= $task['task_deadline'] ?></td>
                     </tr>
                     <?php

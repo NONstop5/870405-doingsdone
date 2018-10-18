@@ -1,13 +1,17 @@
 <?php
 
+session_start();
+
 require_once 'constants.php';
 require_once 'functions.php';
 
-sessionCheck();
+showGuestPage();
 
 $dbConn = connectDb($host, $dbUserName, $dbUserPassw, $dbName);
 
 $currentUserId = $_SESSION['userId'];
+$currentUserData = getCurrentUserData($dbConn, $currentUserId);
+$currentUserName = $currentUserData[0]['user_name'];
 
 $activeProject = ['id' => ''];
 $fieldsValues = createEmptyProjectFieldValuesArray();
@@ -30,7 +34,7 @@ $sql = 'SELECT projects.project_id, projects.project_name, COUNT(tasks.task_id) 
 $projects = getAssocArrayFromSQL($dbConn, $sql);
 
 $pageTitle = "Дела в порядке - Добавление проекта";
-$content = include_template('project_add.php', ['fieldsValues'=> $fieldsValues]);
-$htmlData = include_template('layout.php', ['pageTitle' => $pageTitle, 'projects' => $projects, 'content' => $content, 'activeProject' => $activeProject]);
+$content = includeTemplate('project_add.php', ['fieldsValues'=> $fieldsValues]);
+$htmlData = includeTemplate('layout.php', ['pageTitle' => $pageTitle, 'content' => $content, 'projects' => $projects, 'activeProject' => $activeProject, 'currentUserName' => $currentUserName]);
 print($htmlData);
 ?>

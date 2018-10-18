@@ -28,7 +28,7 @@
                     </div>
 
                     <div class="user-menu__data">
-                        <p><?= $activeUserName ?></p>
+                        <p><?= $currentUserName ?></p>
 
                         <a href="/logout.php">Выйти</a>
                     </div>
@@ -44,9 +44,10 @@
                     <ul class="main-navigation__list">
                     <?php
                     foreach ($projects as $project) {
+                        $activeProjectClass = (intval($project['project_id']) === $activeProject['id']) ? ' main-navigation__list-item--active' : '';
                         ?>
-                        <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="/index.php<?= generateGetParamForUrl(['project_id' => $project['project_id']]) ?>"><?= $project['project_name'] ?></a>
+                        <li class="main-navigation__list-item<?= $activeProjectClass ?>">
+                            <a class="main-navigation__list-item-link" href="/index.php<?= generateGetParamForUrl(['project_id' => intval($project['project_id'])]) ?>"><?= $project['project_name'] ?></a>
                             <span class="main-navigation__list-item-count"><?= $project['task_count'] ?></span>
                         </li>
                     <?php

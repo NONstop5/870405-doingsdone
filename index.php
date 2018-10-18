@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 
 require_once 'constants.php';
@@ -9,8 +10,8 @@ showGuestPage();
 $dbConn = connectDb($host, $dbUserName, $dbUserPassw, $dbName);
 
 $currentUserId = $_SESSION['userId'];
-$user = getUser($dbConn, $currentUserId);
-$activeUserName = $user[0]['user_name'];
+$currentUserData = getCurrentUserData($dbConn, $currentUserId);
+$currentUserName = $currentUserData[0]['user_name'];
 
 $projectFilterQuery = '';
 $taskFilterQuery = '';
@@ -24,9 +25,9 @@ $activeTaskFilter = ['', '', '', ''];
 
 if (isset($_GET['project_id'])) {
     $activeProject['id'] = intval($_GET['project_id']);
-    $projectFilterQuery = ' AND project_id = ' . $activeProject['id'];
+    $projectFilterQuery = ' AND project_id = ' . escapeSql($dbConn, $activeProject['id']);
 
-    $sql = 'SELECT project_id FROM projects WHERE user_id = ' . $currentUserId . ' AND project_id = ' . $activeProject['id'];
+    $sql = 'SELECT project_id FROM projects WHERE user_id = ' . $currentUserId . ' AND project_id = ' . escapeSql($dbConn, $activeProject['id']);
     $projects = execSql($dbConn, $sql);
 
     if (!mysqli_num_rows($projects)) {
@@ -43,21 +44,19 @@ if (isset($_GET['show_completed'])) {
 }
 
 if (isset($_GET['task_id']) && isset($_GET['check'])) {
-    $sql = 'UPDATE tasks SET task_complete_status = ' . intval($_GET['check']) . ' WHERE task_id = ' . intval($_GET['task_id']);
+    $sql = 'UPDATE tasks SET task_complete_status = ' . escapeSql($dbConn, intval($_GET['check'])) . ' WHERE task_id = ' . escapeSql($dbConn, intval($_GET['task_id']));
     execSql($dbConn, $sql);
 }
 
 if (isset($_GET['task_filter'])) {
     $activeTaskFilter[intval($_GET['task_filter'])] = ' tasks-switch__item--active';
     $taskFilterQuery = getTaskFilterQuery($_GET);
-} else {
-    $activeTaskFilter[0] = ' tasks-switch__item--active';
 }
 
 if (isset($_POST['submit']) && isset($_POST['search'])) {
     $taskSearchStr = clearUserInputStr($_POST['search']);
     if (!empty($taskSearchStr)) {
-        $taskSearchQuery = ' AND MATCH(task_name) AGAINST(\'' . $taskSearchStr . '\' IN NATURAL LANGUAGE MODE)';
+        $taskSearchQuery = ' AND MATCH(task_name) AGAINST(\'' . escapeSql($dbConn, $taskSearchStr) . '\' IN NATURAL LANGUAGE MODE)';
     }
 }
 
@@ -65,6 +64,7 @@ $sql = 'SELECT projects.project_id, projects.project_name, COUNT(tasks.task_id) 
         FROM projects
         LEFT JOIN tasks
         ON projects.project_id = tasks.project_id
+        AND tasks.task_complete_status = 0
         WHERE projects.user_id = ' . $currentUserId . '
         GROUP BY projects.project_id';
 $projects = getAssocArrayFromSQL($dbConn, $sql);
@@ -75,6 +75,6 @@ $sql = 'SELECT task_id, task_name, task_deadline, task_complete_status, task_fil
 $tasks = getAssocArrayFromSQL($dbConn, $sql);
 
 $pageTitle = "Дела в порядке";
-$content = include_template('index.php', ["tasks" => $tasks, "showCompleteTasks" => $showCompleteTasks, "activeProject" => $activeProject, 'activeTaskFilter' => $activeTaskFilter]);
-$htmlData = include_template('layout.php', ["tasks" => $tasks, "projects" => $projects, "pageTitle" => $pageTitle, "content" => $content, "activeProject" => $activeProject, 'activeUserName' => $activeUserName]);
+$content = includeTemplate('index.php', ["tasks" => $tasks, "showCompleteTasks" => $showCompleteTasks, "activeProject" => $activeProject, 'activeTaskFilter' => $activeTaskFilter]);
+$htmlData = includeTemplate('layout.php', ["pageTitle" => $pageTitle, "content" => $content, "projects" => $projects, "tasks" => $tasks, 'currentUserName' => $currentUserName, "activeProject" => $activeProject]);
 print($htmlData);
