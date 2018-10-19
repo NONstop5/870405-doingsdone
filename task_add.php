@@ -44,6 +44,7 @@ $sql = 'SELECT projects.project_id, projects.project_name, COUNT(tasks.task_id) 
         FROM projects
         LEFT JOIN tasks
         ON projects.project_id = tasks.project_id
+        AND tasks.task_complete_status = 0
         WHERE projects.user_id = ' . $currentUserId . '
         GROUP BY projects.project_id';
 $projects = getAssocArrayFromSQL($dbConn, $sql);

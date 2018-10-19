@@ -207,10 +207,15 @@ function convertDateToTimestampSqlFormat($dateStr)
 function checkDateFormat($dateStr)
 {
     $result = false;
-    $pattern = '/^([0-9]{2})\.([0-9]{2})\.([0-9]{4})$/';
-    if (preg_match($pattern, $dateStr, $matches)) {
+    $pattern1 = '/^([0-9]{2})\.([0-9]{2})\.([0-9]{4})$/';
+    $pattern2 = '/^([0-9]{4})\-([0-9]{2})\-([0-9]{2})$/';
+    if (preg_match($pattern1, $dateStr, $matches)) {
         $result = checkdate($matches[2], $matches[1], $matches[3]);
     }
+    if (preg_match($pattern2, $dateStr, $matches)) {
+        $result = checkdate($matches[2], $matches[3], $matches[1]);
+    }
+
     return $result;
 }
 
@@ -332,9 +337,9 @@ function checkNewUserFields($dbConn, $postArray)
 {
     $result = createEmptyNewUserFieldValuesArray();
 
-    $postEmailStr = clearUserInputStr($postArray['email']);
-    $postPasswordStr = clearUserInputStr($postArray['password']);
-    $postNameStr = clearUserInputStr($postArray['name']);
+    $postEmailStr = escapeSql($dbConn, clearUserInputStr($postArray['email']));
+    $postPasswordStr = escapeSql($dbConn, clearUserInputStr($postArray['password']));
+    $postNameStr = escapeSql($dbConn, clearUserInputStr($postArray['name']));
 
     $isCorrectEmail = filter_var($postEmailStr, FILTER_VALIDATE_EMAIL);
 
@@ -347,7 +352,7 @@ function checkNewUserFields($dbConn, $postArray)
     } elseif (!$isCorrectEmail) {
         $result = setErrorsValues($result, 'email', 'E-mail введён некорректно');
     } else {
-        $sql = 'SELECT user_id FROM users WHERE user_email = \'' . escapeSql($dbConn, $postEmailStr) . '\'';
+        $sql = 'SELECT user_id FROM users WHERE user_email = \'' . $postEmailStr . '\'';
         $users = execSql($dbConn, $sql);
 
         if (mysqli_num_rows($users)) {
@@ -375,8 +380,8 @@ function checkExistingUserFields($dbConn, $postArray)
 {
     $result = createEmptyExistingUserFieldValuesArray();
 
-    $postEmailStr = clearUserInputStr($postArray['email']);
-    $postPasswordStr = clearUserInputStr($postArray['password']);
+    $postEmailStr = escapeSql($dbConn, clearUserInputStr($postArray['email']));
+    $postPasswordStr = escapeSql($dbConn, clearUserInputStr($postArray['password']));
 
     $isCorrectEmail = filter_var($postEmailStr, FILTER_VALIDATE_EMAIL);
 
@@ -392,7 +397,7 @@ function checkExistingUserFields($dbConn, $postArray)
     if (empty($postPasswordStr)) {
         $result = setErrorsValues($result, 'password', 'Введите корректное значение');
     } else {
-        $sql = 'SELECT user_id, user_name, user_password FROM users WHERE user_email = \'' . escapeSql($dbConn, $postEmailStr) . '\'';
+        $sql = 'SELECT user_id, user_name, user_password FROM users WHERE user_email = \'' . $postEmailStr . '\'';
         $users = getAssocArrayFromSQL($dbConn, $sql);
 
         if (count($users)) {
@@ -416,14 +421,14 @@ function checkProjectFields($dbConn, $currentUserId, $postArray)
 {
     $result = createEmptyProjectFieldValuesArray();
 
-    $postNameStr = clearUserInputStr($postArray['name']);
+    $postNameStr = escapeSql($dbConn, clearUserInputStr($postArray['name']));
 
     $result['fieldValues']['name'] = $postNameStr;
 
     if (empty($postNameStr)) {
         $result = setErrorsValues($result, 'name', 'Введите корректное значение');
     } else {
-        $sql = 'SELECT project_id FROM projects WHERE user_id = ' . $currentUserId . ' AND project_name = \'' . escapeSql($dbConn, $postNameStr) . '\'';
+        $sql = 'SELECT project_id FROM projects WHERE user_id = ' . $currentUserId . ' AND project_name = \'' . $postNameStr . '\'';
         $projects = execSql($dbConn, $sql);
 
         if (mysqli_num_rows($projects)) {
@@ -439,9 +444,9 @@ function checkTaskFields($dbConn, $currentUserId, $postArray, $filesArray)
 {
     $result = createEmptyTaskFieldValuesArray();
 
-    $postNameStr = clearUserInputStr($postArray['name']);
-    $postProjectStr = clearUserInputStr($postArray['project']);
-    $postDateStr = clearUserInputStr($postArray['date']);
+    $postNameStr = escapeSql($dbConn, clearUserInputStr($postArray['name']));
+    $postProjectStr = escapeSql($dbConn, clearUserInputStr($postArray['project']));
+    $postDateStr = escapeSql($dbConn, clearUserInputStr($postArray['date']));
 
     $result['fieldValues']['name'] = $postNameStr;
     $result['fieldValues']['date'] = $postDateStr;
@@ -453,11 +458,13 @@ function checkTaskFields($dbConn, $currentUserId, $postArray, $filesArray)
     if (empty($postProjectStr)) {
         $result = setErrorsValues($result, 'project', 'Введите корректное значение');
     } else {
-        $sql = 'SELECT project_id FROM projects WHERE user_id = ' . escapeSql($dbConn, $currentUserId) . ' AND project_id = ' . escapeSql($dbConn, $postProjectStr);
+        $sql = 'SELECT project_id FROM projects WHERE user_id = ' . escapeSql($dbConn, $currentUserId) . ' AND project_id = ' . $postProjectStr;
         $projects = execSql($dbConn, $sql);
 
         if (mysqli_num_rows($projects)) {
             $result['fieldValues']['project'] = $postProjectStr;
+        } else {
+            $result = setErrorsValues($result, 'project', 'Введите корректное значение');
         }
     }
 
